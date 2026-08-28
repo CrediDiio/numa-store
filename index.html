@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NUMA</title>
+  
+  <!-- Tailwind CSS via CDN + Configuração da Paleta do Tema Original -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            numa: {
+              bg: '#F5F2EC',      /* Off-white / creme suave original */
+              card: '#FFFFFF',      /* Cards em branco */
+              accent: '#000000',    /* Preto original para botões e destaques */
+              accentHover: '#27272A',
+              dark: '#1C1917',      /* Texto principal escuro */
+              subtle: '#78716C',    /* Subtextos */
+              border: '#E7E2D8'     /* Bordas sutis */
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Estilos Customizados -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-numa-bg text-numa-dark antialiased selection:bg-black selection:text-white">
+
+  <!-- 1. BARRA DE ANÚNCIOS (PRETA ORIGINAL) -->
+  <div class="bg-black text-white text-xs font-semibold uppercase tracking-widest overflow-hidden py-2.5">
+    <div class="animate-marquee whitespace-nowrap">
+      <span class="mx-6">✨ FRETE GRÁTIS A PARTIR DE R$ 400 — CUPOM: NUMA20</span>
+      <span class="mx-6">⭐ CONHEÇA A NOVA COLEÇÃO STAR ⭐</span>
+      <span class="mx-6">✨ FRETE GRÁTIS A PARTIR DE R$ 400 — CUPOM: NUMA20</span>
+      <span class="mx-6">⭐ CONHEÇA A NOVA COLEÇÃO STAR ⭐</span>
+    </div>
+  </div>
+
+  <!-- 2. CABEÇALHO CENTRALIZADO -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-numa-border py-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Linha Superior: Botão Mobile | LOGO CENTRAL "NUMA" | Ícones Utilitários -->
+      <div class="relative flex items-center justify-between h-10">
+        
+        <!-- Esquerda: Botão Menu Mobile -->
+        <div class="flex items-center w-1/4 lg:w-auto">
+          <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="lg:hidden p-2 text-numa-dark hover:text-black transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+        </div>
+
+        <!-- Centro: Apenas "NUMA" -->
+        <div class="text-center flex-1">
+          <a href="#" class="text-2xl font-black tracking-widest text-black uppercase inline-block">
+            NUMA
+          </a>
+        </div>
+
+        <!-- Direita: Busca e Carrinho -->
+        <div class="flex items-center justify-end space-x-4 w-1/4 lg:w-auto">
+          <button onclick="toggleSearch()" class="p-2 text-numa-dark hover:text-black transition-colors" title="Buscar produtos">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+          </button>
+          <button onclick="toggleCart()" class="relative p-2 text-numa-dark hover:text-black transition-colors flex items-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119.993z"/></svg>
+            <span id="cart-count" class="absolute -top-1 -right-1 bg-black text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Linha Inferior: Menu Principal (Desktop) -->
+      <nav class="hidden lg:flex items-center justify-center space-x-8 mt-4 pt-3 border-t border-numa-border/60 text-[11px] font-bold uppercase tracking-wider text-numa-dark">
+        <a href="#catalogo" class="hover:text-black transition-colors">Produtos</a>
+        <a href="#quem-somos" class="hover:text-black transition-colors">Quem Somos</a>
+        <a href="perguntas-frequentes.html" class="hover:text-black transition-colors">Perguntas Frequentes</a>
+        <a href="politica-de-privacidade.html" class="hover:text-black transition-colors">Política de Privacidade</a>
+      </nav>
+
+    </div>
+
+    <!-- Barra de Busca Expansível -->
+    <div id="search-bar" class="hidden border-t border-numa-border bg-numa-bg px-4 py-3 mt-3">
+      <div class="max-w-xl mx-auto flex items-center gap-2">
+        <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="Digite para buscar produtos..." class="w-full bg-white border border-numa-border rounded px-3 py-2 text-xs text-numa-dark focus:outline-none focus:border-black uppercase tracking-wider">
+        <button onclick="toggleSearch()" class="text-xs text-numa-subtle hover:text-black font-semibold uppercase">Fechar</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MENU MOBILE (DRAWER) -->
+  <div id="mobile-menu" class="fixed inset-0 z-50 pointer-events-none">
+    <div id="mobile-menu-overlay" onclick="toggleMobileMenu()" class="absolute inset-0 bg-numa-dark/50 opacity-0 transition-opacity duration-300 pointer-events-none"></div>
+    <div id="mobile-menu-panel" class="absolute top-0 left-0 h-full w-72 bg-white shadow-2xl transform -translate-x-full transition-transform duration-300 pointer-events-auto p-6 flex flex-col justify-between border-r border-numa-border">
+      <div>
+        <div class="flex items-center justify-between pb-6 border-b border-numa-border">
+          <span class="text-2xl font-black uppercase tracking-widest text-black">NUMA</span>
+          <button onclick="toggleMobileMenu()" class="p-2 text-numa-subtle hover:text-numa-dark">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <nav class="flex flex-col space-y-4 mt-6 text-xs font-bold uppercase tracking-wider text-numa-dark">
+          <a href="#catalogo" onclick="toggleMobileMenu()" class="hover:text-black transition-colors py-1.5">Produtos</a>
+          <a href="#quem-somos" onclick="toggleMobileMenu()" class="hover:text-black transition-colors py-1.5">Quem Somos</a>
+          <a href="perguntas-frequentes.html" class="hover:text-black transition-colors py-1.5">Perguntas Frequentes</a>
+          <a href="politica-de-privacidade.html" class="hover:text-black transition-colors py-1.5">Política de Privacidade</a>
+        </nav>
+      </div>
+      <div class="border-t border-numa-border pt-4 text-[10px] text-numa-subtle uppercase tracking-widest">
+        NUMA © 2026
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. HERO BANNER -->
+  <section class="relative bg-numa-bg overflow-hidden border-b border-numa-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 flex flex-col items-center text-center relative z-10">
+      <span class="text-xs font-bold uppercase tracking-widest text-numa-subtle mb-3">Lançamento Exclusivo</span>
+      <h1 class="text-4xl sm:text-6xl font-black uppercase tracking-tight text-black mb-6">Coleção STAR ⭐</h1>
+      <p class="max-w-xl text-numa-subtle text-sm sm:text-base leading-relaxed mb-8">
+        Correntes prateadas, pingentes místico-astrais e fios de malha selecionados em 4 variações de cores marcantes.
+      </p>
+      <a href="#catalogo" class="inline-block bg-black text-white px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-md rounded-sm">
+        Ver Produtos
+      </a>
+    </div>
+    <div class="absolute inset-0 opacity-15 bg-cover bg-center mix-blend-multiply" style="background-image: url('assets/bag1.jpg');"></div>
+  </section>
+
+  <!-- 4. GRADE DE PRODUTOS / CATÁLOGO -->
+  <section id="catalogo" class="py-16 bg-numa-bg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex items-center justify-between mb-10">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-numa-dark">Catálogo de Produtos</h2>
+          <p class="text-xs text-numa-subtle uppercase tracking-widest mt-1">Conheça nossos modelos artesanais</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        
+        <!-- MODELO 1: Bolsa STAR ⭐ -->
+        <div data-product-card onclick="openProductModal('star')" class="product-item group relative flex flex-col bg-numa-card p-3 rounded-lg border border-numa-border shadow-sm hover:shadow-md hover:border-black transition-all cursor-pointer">
+          <div class="relative aspect-[4/5] bg-numa-bg overflow-hidden mb-4 rounded-md">
+            <span class="absolute top-3 left-3 z-10 bg-black text-white text-[10px] font-bold uppercase px-2.5 py-1 tracking-widest rounded-sm shadow-sm">⭐ Coleção STAR</span>
+            <img src="assets/bag1.jpg" alt="Bolsa STAR ⭐" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <button class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur text-numa-dark py-3 text-xs font-bold uppercase tracking-wider hover:bg-black hover:text-white transition-colors opacity-0 group-hover:opacity-100 shadow-md rounded">
+              Escolher Cor / Ver Detalhes
+            </button>
+          </div>
+          <h3 class="product-title text-xs font-bold uppercase tracking-wider text-numa-dark flex items-center gap-1">
+            Bolsa STAR ⭐
+          </h3>
+          <p class="text-[11px] text-numa-subtle mt-0.5">4 cores disponíveis (Noir, Carmim, Terracota, Esmeralda)</p>
+          <p class="text-xs font-bold text-black mt-2">R$ 189,90</p>
+        </div>
+
+        <!-- MODELO 2: Bolsa Clássica -->
+        <div data-product-card onclick="openProductModal('classica')" class="product-item group relative flex flex-col bg-numa-card p-3 rounded-lg border border-numa-border shadow-sm hover:shadow-md hover:border-black transition-all cursor-pointer">
+          <div class="relative aspect-[4/5] bg-numa-bg overflow-hidden mb-4 rounded-md">
+            <img src="assets/bag8.jpg" alt="Bolsa Clássica Carmesim" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <button class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur text-numa-dark py-3 text-xs font-bold uppercase tracking-wider hover:bg-black hover:text-white transition-colors opacity-0 group-hover:opacity-100 shadow-md rounded">
+              Escolher Cor / Ver Detalhes
+            </button>
+          </div>
+          <h3 class="product-title text-xs font-bold uppercase tracking-wider text-numa-dark">Bolsa Clássica</h3>
+          <p class="text-[11px] text-numa-subtle mt-0.5">2 cores disponíveis (Carmesim, Preta)</p>
+          <p class="text-xs font-bold text-black mt-2">R$ 159,90</p>
+        </div>
+
+        <!-- MODELO 3: Bolsa Flora -->
+        <div data-product-card onclick="openProductModal('flora')" class="product-item group relative flex flex-col bg-numa-card p-3 rounded-lg border border-numa-border shadow-sm hover:shadow-md hover:border-black transition-all cursor-pointer">
+          <div class="relative aspect-[4/5] bg-numa-bg overflow-hidden mb-4 rounded-md">
+            <span class="absolute top-3 left-3 z-10 bg-black text-white text-[10px] font-bold uppercase px-2 py-1 tracking-widest rounded-sm">Novo</span>
+            <img src="assets/bag6.jpg" alt="Bolsa Flora" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <button class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur text-numa-dark py-3 text-xs font-bold uppercase tracking-wider hover:bg-black hover:text-white transition-colors opacity-0 group-hover:opacity-100 shadow-md rounded">
+              Escolher Cor / Ver Detalhes
+            </button>
+          </div>
+          <h3 class="product-title text-xs font-bold uppercase tracking-wider text-numa-dark">Bolsa Flora</h3>
+          <p class="text-[11px] text-numa-subtle mt-0.5">3 cores disponíveis (Lavanda, P&B, Morango/Rosé)</p>
+          <p class="text-xs font-bold text-black mt-2">R$ 179,90</p>
+        </div>
+
+        <!-- MODELO 4: Bolsa Nuvem -->
+        <div data-product-card onclick="openProductModal('nuvem')" class="product-item group relative flex flex-col bg-numa-card p-3 rounded-lg border border-numa-border shadow-sm hover:shadow-md hover:border-black transition-all cursor-pointer">
+          <div class="relative aspect-[4/5] bg-numa-bg overflow-hidden mb-4 rounded-md">
+            <span class="absolute top-3 left-3 z-10 bg-black text-white text-[10px] font-bold uppercase px-2 py-1 tracking-widest rounded-sm">Tendência</span>
+            <img src="assets/bag9.jpg" alt="Bolsa Nuvem Lilás" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <button class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur text-numa-dark py-3 text-xs font-bold uppercase tracking-wider hover:bg-black hover:text-white transition-colors opacity-0 group-hover:opacity-100 shadow-md rounded">
+              Ver Detalhes
+            </button>
+          </div>
+          <h3 class="product-title text-xs font-bold uppercase tracking-wider text-numa-dark">Bolsa Nuvem - Lilás</h3>
+          <p class="text-[11px] text-numa-subtle mt-0.5">Textura felpuda exclusiva</p>
+          <p class="text-xs font-bold text-black mt-2">R$ 149,90</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. SEÇÃO QUEM SOMOS -->
+  <section id="quem-somos" class="py-16 bg-white border-t border-b border-numa-border">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <span class="text-xs font-bold uppercase tracking-widest text-black">Feito à Mão</span>
+      <h2 class="text-2xl font-black uppercase tracking-wider text-numa-dark mt-2 mb-6">Quem Somos</h2>
+      <p class="text-xs sm:text-sm text-numa-subtle leading-relaxed uppercase tracking-wide">
+        A NUMA nasceu da paixão pelo design autoral e pelo trabalho artesanal contemporâneo. Cada bolsa é confeccionada manualmente com fios selecionados, detalhes metálicos exclusivos e acabamento impecável para expressar a sua personalidade com sofisticação.
+      </p>
+    </div>
+  </section>
+
+  <!-- 6. MODAL DINÂMICO DE PRODUTO -->
+  <div id="product-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-numa-dark/60 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white border border-numa-border w-full max-w-3xl rounded-lg shadow-2xl overflow-hidden relative flex flex-col md:flex-row">
+      <button onclick="closeProductModal()" class="absolute top-4 right-4 z-10 p-2 text-numa-subtle hover:text-numa-dark bg-white/80 rounded-full">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="w-full md:w-1/2 aspect-[4/5] bg-numa-bg relative">
+        <img id="modal-product-img" src="assets/bag1.jpg" alt="Produto" class="w-full h-full object-cover">
+      </div>
+
+      <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between bg-white">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-black">Coleção Exclusiva</span>
+          <h2 id="modal-product-title" class="text-xl font-black uppercase tracking-wider text-numa-dark mt-1">Bolsa</h2>
+          <p id="modal-product-price" class="text-lg font-bold text-black mt-2">R$ 0,00</p>
+          <p id="modal-product-desc" class="text-xs text-numa-subtle mt-3 leading-relaxed">
+            Descrição do produto.
+          </p>
+
+          <div id="modal-color-selector-wrapper" class="mt-6">
+            <label class="block text-xs font-bold uppercase tracking-wider text-numa-dark mb-3">
+              Selecione a Cor: <span id="selected-color-name" class="font-normal text-numa-subtle">-</span>
+            </label>
+            <div id="color-options-container" class="flex flex-wrap gap-3">
+              <!-- Botões das cores dinâmicos via JS -->
+            </div>
+          </div>
+        </div>
+
+        <button onclick="addSelectedVariantToCart()" class="w-full bg-black text-white py-4 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors mt-8 rounded-sm">
+          Adicionar à Sacola
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. CARRINHO LATERAL (CART DRAWER) -->
+  <div id="cart-drawer" class="fixed inset-0 z-50 pointer-events-none">
+    <div id="cart-overlay" onclick="toggleCart()" class="absolute inset-0 bg-numa-dark/50 opacity-0 transition-opacity duration-300 pointer-events-none"></div>
+    
+    <div id="cart-panel" class="absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl transform translate-x-full transition-transform duration-300 pointer-events-auto flex flex-col border-l border-numa-border">
+      <div class="p-6 border-b border-numa-border flex items-center justify-between">
+        <h3 class="text-sm font-bold uppercase tracking-wider text-numa-dark">Sua Sacola (<span id="cart-drawer-count">0</span>)</h3>
+        <button onclick="toggleCart()" class="p-2 text-numa-subtle hover:text-numa-dark">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4">
+        <div id="empty-cart-msg" class="text-center py-12 text-numa-subtle uppercase text-xs tracking-wider">
+          Sua sacola está vazia no momento.
+        </div>
+      </div>
+
+      <div class="p-6 border-t border-numa-border bg-numa-bg space-y-4">
+        <div class="flex justify-between text-xs font-bold uppercase tracking-wider text-numa-dark">
+          <span>Subtotal</span>
+          <span id="cart-subtotal" class="text-black">R$ 0,00</span>
+        </div>
+        <button onclick="checkoutWhatsApp()" class="w-full bg-black text-white py-4 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors rounded-sm">
+          Finalizar Pedido (WhatsApp)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. RODAPÉ (FOOTER) -->
+  <footer class="bg-black text-white pt-12 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 pb-12 border-b border-zinc-800">
+      <div>
+        <h3 class="text-lg font-black uppercase tracking-widest text-white mb-4">NUMA</h3>
+        <p class="text-xs text-zinc-400 uppercase tracking-wider leading-relaxed">
+          Peças artesanais exclusivas feitas à mão com paixão e qualidade.
+        </p>
+      </div>
+      <div>
+        <h4 class="text-xs font-bold uppercase tracking-widest mb-4 text-zinc-300">Navegação</h4>
+        <ul class="space-y-2 text-xs uppercase tracking-wider text-zinc-400">
+          <li><a href="#catalogo" class="hover:text-white transition-colors">Produtos</a></li>
+          <li><a href="#quem-somos" class="hover:text-white transition-colors">Quem Somos</a></li>
+          <li><a href="perguntas-frequentes.html" class="hover:text-white transition-colors">Perguntas Frequentes</a></li>
+          <li><a href="politica-de-privacidade.html" class="hover:text-white transition-colors">Política de Privacidade</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-xs font-bold uppercase tracking-widest mb-4 text-zinc-300">Atendimento</h4>
+        <p class="text-xs text-zinc-400 uppercase tracking-wider mb-2">Envios para todo o Brasil</p>
+        <p class="text-xs text-zinc-400 uppercase tracking-wider">WhatsApp: (21) 99999-9999</p>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 flex flex-col sm:flex-row items-center justify-between text-[10px] text-zinc-500 uppercase tracking-widest gap-4">
+      <p>© 2026 NUMA. Todos os direitos reservados.</p>
+      <p>Pagamentos via Pix, Cartão de Crédito e Boleto</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
