@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedido Confirmado — NUMA</title>
+  
+  <!-- Tailwind CSS via CDN + Configuração da Paleta do Tema NUMA -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            numa: {
+              bg: '#F5F2EC',
+              card: '#FFFFFF',
+              accent: '#000000',
+              accentHover: '#27272A',
+              dark: '#1C1917',
+              subtle: '#78716C',
+              border: '#E7E2D8'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-numa-bg text-numa-dark antialiased selection:bg-black selection:text-white flex flex-col min-h-screen">
+
+  <!-- BARRA DE ANÚNCIOS -->
+  <div class="bg-black text-white text-xs font-semibold uppercase tracking-widest overflow-hidden py-2.5">
+    <div class="animate-marquee whitespace-nowrap">
+      <span class="mx-6">✨ OBRIGADO POR COMPRAR NA NUMA ✨</span>
+      <span class="mx-6">⭐ DESIGN AUTORAL FEITO À MÃO ⭐</span>
+      <span class="mx-6">✨ OBRIGADO POR COMPRAR NA NUMA ✨</span>
+      <span class="mx-6">⭐ DESIGN AUTORAL FEITO À MÃO ⭐</span>
+    </div>
+  </div>
+
+  <!-- CABEÇALHO -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-numa-border py-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-10">
+      <div class="w-1/4"></div>
+      <div class="text-center flex-1">
+        <a href="index.html" class="text-2xl font-black tracking-widest text-black uppercase inline-block">
+          NUMA
+        </a>
+      </div>
+      <div class="w-1/4 flex justify-end">
+        <a href="index.html" class="text-xs font-bold uppercase tracking-wider text-numa-subtle hover:text-black">Loja</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL (MENSAGEM DE SUCESSO) -->
+  <main class="flex-1 max-w-2xl mx-auto w-full px-4 sm:px-6 py-16 flex flex-col items-center justify-center text-center">
+    
+    <!-- Ícone de Sucesso -->
+    <div class="w-16 h-16 bg-black text-white rounded-full flex items-center justify-center mb-6 shadow-md">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+      </svg>
+    </div>
+
+    <span class="text-xs font-bold uppercase tracking-widest text-numa-subtle">Pagamento Recebido</span>
+    <h1 class="text-3xl sm:text-4xl font-black uppercase tracking-wider text-black mt-2 mb-4">
+      Pedido Confirmado!
+    </h1>
+
+    <p class="text-xs sm:text-sm text-numa-subtle leading-relaxed uppercase tracking-wide max-w-lg mb-8">
+      Muito obrigado pela sua compra! O seu pedido já foi registrado e em breve iniciaremos a confecção artesanal da sua peça com todo o carinho.
+    </p>
+
+    <!-- CARD DE PRÓXIMOS PASSOS -->
+    <div class="w-full bg-white border border-numa-border rounded-lg p-6 sm:p-8 text-left space-y-4 mb-8 shadow-sm">
+      <h2 class="text-xs font-bold uppercase tracking-widest text-black border-b border-numa-border pb-3">
+        Próximos Passos
+      </h2>
+      
+      <div class="flex items-start space-x-3 text-xs uppercase tracking-wider text-numa-dark">
+        <span class="font-bold text-black">1.</span>
+        <p>Você receberá as atualizações sobre o comprovante no seu e-mail cadastrado no Mercado Pago.</p>
+      </div>
+
+      <div class="flex items-start space-x-3 text-xs uppercase tracking-wider text-numa-dark">
+        <span class="font-bold text-black">2.</span>
+        <p>Assim que sua peça for postada nos Correios, enviaremos o código de rastreamento direto para o seu WhatsApp.</p>
+      </div>
+    </div>
+
+    <!-- BOTÕES DE AÇÃO -->
+    <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
+      <a href="index.html" class="inline-block bg-black text-white px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors rounded-sm text-center">
+        Voltar à Loja
+      </a>
+      <a href="https://wa.me/5521967755728" target="_blank" class="inline-block bg-white text-black border border-black px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-numa-bg transition-colors rounded-sm text-center">
+        Dúvidas no WhatsApp
+      </a>
+    </div>
+
+  </main>
+
+  <!-- RODAPÉ -->
+  <footer class="bg-black text-white py-8 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-[10px] text-zinc-500 uppercase tracking-widest gap-4">
+      <p>© 2026 NUMA. Todos os direitos reservados.</p>
+      <div class="flex items-center gap-4">
+        <a href="https://www.instagram.com/numa_croche/" target="_blank" class="hover:text-white transition-colors">Instagram</a>
+        <a href="perguntas-frequentes.html" class="hover:text-white">FAQ</a>
+        <a href="politica-de-privacidade.html" class="hover:text-white">Privacidade</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

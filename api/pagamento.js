@@ -47,7 +47,7 @@ module.exports = async (req, res) => {
       body: {
         items: itemsMercadoPago,
         back_urls: {
-          success: 'https://numa-store-taupe.vercel.app/',
+          success: 'https://numa-store-taupe.vercel.app/sucesso.html',
           failure: 'https://numa-store-taupe.vercel.app/',
           pending: 'https://numa-store-taupe.vercel.app/'
         },
