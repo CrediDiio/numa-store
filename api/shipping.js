@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   const MELHOR_ENVIO_TOKEN = process.env.MELHOR_ENVIO_TOKEN || 'SEU_TOKEN_AQUI';
   
   // CEP de origem da sua loja (ex: CEP do Rio de Janeiro)
-  const CEP_ORIGEM = '20000000'; 
+  const CEP_ORIGEM = '23066070'; 
 
   // Dados padrão da Bolsa NUMA para o cálculo de dimensões e peso
   const payload = {

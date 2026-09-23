@@ -337,9 +337,9 @@ function updateCartUI() {
   `).join('');
 }
 
-function checkoutWhatsApp() {
+async function checkoutMercadoPago() {
   if (cart.length === 0) {
-    alert('Adicione peças ao carrinho antes de finalizar!');
+    alert('Adicione peças à sacola antes de finalizar!');
     return;
   }
 
@@ -348,25 +348,40 @@ function checkoutWhatsApp() {
     return;
   }
 
+  // Calcula o frete com a regra de frete grátis acima de R$ 400
   const subtotalAmount = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const rate = shippingRates[selectedState];
   const isFree = subtotalAmount >= 400;
   const shippingCost = isFree ? 0 : rate.price;
-  const totalAmount = subtotalAmount + shippingCost;
 
-  let message = "*Novo Pedido - NUMA*\n\n";
-  
-  cart.forEach((item) => {
-    message += `• *${item.title}* (x${item.quantity}) - ${formatCurrency(item.price * item.quantity)}\n`;
-  });
-  
-  message += `\n*Subtotal:* ${formatCurrency(subtotalAmount)}`;
-  message += `\n*Estado de Entrega:* ${rate.name} (${selectedState})`;
-  message += `\n*Frete:* ${isFree ? "GRÁTIS (Promoção Frete Grátis)" : formatCurrency(shippingCost)} (${rate.days})`;
-  message += `\n*Total a Pagar:* ${formatCurrency(totalAmount)}`;
+  // Altera o texto do botão para mostrar que está a carregar
+  const btn = document.getElementById('btn-checkout');
+  if (btn) {
+    btn.innerText = "A Processar Pagamento...";
+    btn.disabled = true;
+  }
 
-  const phone = "5521967755728"; 
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-  
-  window.open(url, '_blank');
+  try {
+    const resposta = await fetch('/api/pagamento', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        itens: cart,
+        frete: shippingCost
+      })
+    });
+
+    const dados = await resposta.json();
+
+    if (dados.init_point) {
+      // Redireciona o cliente para a página segura do Mercado Pago
+      window.location.href = dados.init_point;
+    } else {
+      alert("Erro ao processar. Verifique a configuração.");
+      if (btn) { btn.innerText = "Finalizar Pagamento"; btn.disabled = false; }
+    }
+  } catch (error) {
+    alert("Falha na ligação com o servidor.");
+    if (btn) { btn.innerText = "Finalizar Pagamento"; btn.disabled = false; }
+  }
 }
