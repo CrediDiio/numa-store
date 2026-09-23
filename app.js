@@ -1,3 +1,34 @@
+// Tabela de tarifas de frete fixo por Estado (Origem: Rio de Janeiro / CEP 23066-070)
+const shippingRates = {
+  RJ: { name: "Rio de Janeiro", price: 15.00, days: "1 a 3 dias úteis" },
+  SP: { name: "São Paulo", price: 25.00, days: "3 a 5 dias úteis" },
+  MG: { name: "Minas Gerais", price: 25.00, days: "3 a 5 dias úteis" },
+  ES: { name: "Espírito Santo", price: 25.00, days: "3 a 5 dias úteis" },
+  PR: { name: "Paraná", price: 35.00, days: "5 a 8 dias úteis" },
+  SC: { name: "Santa Catarina", price: 35.00, days: "5 a 8 dias úteis" },
+  RS: { name: "Rio Grande do Sul", price: 35.00, days: "5 a 8 dias úteis" },
+  DF: { name: "Distrito Federal", price: 45.00, days: "6 a 10 dias úteis" },
+  GO: { name: "Goiás", price: 45.00, days: "6 a 10 dias úteis" },
+  MT: { name: "Mato Grosso", price: 45.00, days: "6 a 10 dias úteis" },
+  MS: { name: "Mato Grosso do Sul", price: 45.00, days: "6 a 10 dias úteis" },
+  BA: { name: "Bahia", price: 55.00, days: "8 a 15 dias úteis" },
+  CE: { name: "Ceará", price: 55.00, days: "8 a 15 dias úteis" },
+  PE: { name: "Pernambuco", price: 55.00, days: "8 a 15 dias úteis" },
+  AL: { name: "Alagoas", price: 55.00, days: "8 a 15 dias úteis" },
+  PB: { name: "Paraíba", price: 55.00, days: "8 a 15 dias úteis" },
+  PI: { name: "Piauí", price: 55.00, days: "8 a 15 dias úteis" },
+  RN: { name: "Rio Grande do Norte", price: 55.00, days: "8 a 15 dias úteis" },
+  SE: { name: "Sergipe", price: 55.00, days: "8 a 15 dias úteis" },
+  MA: { name: "Maranhão", price: 55.00, days: "8 a 15 dias úteis" },
+  AM: { name: "Amazonas", price: 65.00, days: "10 a 20 dias úteis" },
+  PA: { name: "Pará", price: 65.00, days: "10 a 20 dias úteis" },
+  AP: { name: "Amapá", price: 65.00, days: "10 a 20 dias úteis" },
+  AC: { name: "Acre", price: 65.00, days: "10 a 20 dias úteis" },
+  RO: { name: "Rondônia", price: 65.00, days: "10 a 20 dias úteis" },
+  RR: { name: "Roraima", price: 65.00, days: "10 a 20 dias úteis" },
+  TO: { name: "Tocantins", price: 65.00, days: "10 a 20 dias úteis" }
+};
+
 // Data com os produtos e variações
 const productsData = {
   star: {
@@ -44,51 +75,13 @@ const productsData = {
   }
 };
 
-// Conteúdo para as páginas institucionais
-const pageContents = {
-  faq: {
-    title: "Perguntas Frequentes",
-    content: "<p><strong>Como são feitas as bolsas?</strong><br>Todas as peças são confeccionadas artesanalmente à mão com fios de malha selecionados.</p><p><strong>Qual o prazo de produção?</strong><br>O prazo médio de produção e envio é de 3 a 7 dias úteis após a confirmação do pagamento.</p>"
-  },
-  entrega: {
-    title: "Prazo de Entrega",
-    content: "<p>Realizamos envios para todo o Brasil via Correios (SEDEX e PAC) e transportadoras parceiras.</p><p>O prazo total é a soma do tempo de produção (3 a 7 dias) + o prazo do frete escolhido no momento do envio.</p>"
-  },
-  privacidade: {
-    title: "Política de Privacidade",
-    content: "<p>Garantimos a total segurança dos seus dados pessoais. Informações de contato e pagamento são utilizadas exclusivamente para o processamento e entrega dos seus pedidos.</p>"
-  },
-  atendimento: {
-    title: "Atendimento",
-    content: "<p>Estamos à disposição para tirar todas as suas dúvidas!</p><p><strong>WhatsApp:</strong> (21) 99999-9999<br><strong>Horário:</strong> Segunda a Sexta, das 09h às 18h.</p>"
-  }
-};
-
 let currentSelectedProduct = productsData.star;
 let currentSelectedVariantIndex = 0;
 let cart = [];
+let selectedState = "";
 
 function formatCurrency(amount) {
   return `R$ ${amount.toFixed(2).replace('.', ',')}`;
-}
-
-// --- MODAL DE PÁGINAS INSTITUCIONAIS ---
-function openPageModal(pageKey) {
-  const modal = document.getElementById('info-modal');
-  const page = pageContents[pageKey];
-  if (!page) return;
-
-  document.getElementById('info-modal-title').innerText = page.title;
-  document.getElementById('info-modal-body').innerHTML = page.content;
-
-  modal.classList.remove('opacity-0', 'pointer-events-none');
-  document.body.style.overflow = 'hidden';
-}
-
-function closePageModal() {
-  const modal = document.getElementById('info-modal');
-  modal.classList.add('opacity-0', 'pointer-events-none');
-  document.body.style.overflow = 'auto';
 }
 
 // --- MENU MOBILE ---
@@ -205,7 +198,7 @@ function addSelectedVariantToCart() {
   closeProductModal();
 }
 
-// --- CARRINHO ---
+// --- CARRINHO E FRETE ---
 function toggleCart() {
   const drawer = document.getElementById('cart-drawer');
   const overlay = document.getElementById('cart-overlay');
@@ -252,18 +245,65 @@ function removeFromCart(index) {
   updateCartUI();
 }
 
+function calculateShipping() {
+  const stateSelect = document.getElementById('shipping-state');
+  if (stateSelect) {
+    selectedState = stateSelect.value;
+  }
+  updateCartUI();
+}
+
 function updateCartUI() {
   const cartItemsContainer = document.getElementById('cart-items');
   const cartCount = document.getElementById('cart-count');
   const cartDrawerCount = document.getElementById('cart-drawer-count');
   const cartSubtotal = document.getElementById('cart-subtotal');
+  const cartShipping = document.getElementById('cart-shipping');
+  const cartTotal = document.getElementById('cart-total');
+  const shippingInfo = document.getElementById('shipping-info');
 
   const totalCount = cart.reduce((acc, item) => acc + item.quantity, 0);
-  const totalAmount = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const subtotalAmount = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
   if (cartCount) cartCount.innerText = totalCount;
   if (cartDrawerCount) cartDrawerCount.innerText = totalCount;
-  if (cartSubtotal) cartSubtotal.innerText = formatCurrency(totalAmount);
+  if (cartSubtotal) cartSubtotal.innerText = formatCurrency(subtotalAmount);
+
+  let shippingCost = 0;
+  if (selectedState && shippingRates[selectedState]) {
+    const rate = shippingRates[selectedState];
+    if (subtotalAmount >= 400 && subtotalAmount > 0) {
+      shippingCost = 0;
+      if (shippingInfo) {
+        shippingInfo.classList.remove('hidden');
+        shippingInfo.innerHTML = `<span class="text-green-700 font-bold">✨ Frete Grátis aplicado! (${rate.days})</span>`;
+      }
+    } else {
+      shippingCost = rate.price;
+      if (shippingInfo) {
+        shippingInfo.classList.remove('hidden');
+        shippingInfo.innerText = `Prazo estimado: ${rate.days}`;
+      }
+    }
+  } else {
+    if (shippingInfo) {
+      shippingInfo.classList.add('hidden');
+      shippingInfo.innerText = '';
+    }
+  }
+
+  if (cartShipping) {
+    if (!selectedState) {
+      cartShipping.innerText = "Selecione o estado";
+    } else if (shippingCost === 0 && subtotalAmount >= 400) {
+      cartShipping.innerText = "GRÁTIS";
+    } else {
+      cartShipping.innerText = formatCurrency(shippingCost);
+    }
+  }
+
+  const totalAmount = subtotalAmount + shippingCost;
+  if (cartTotal) cartTotal.innerText = formatCurrency(totalAmount);
 
   if (cart.length === 0) {
     cartItemsContainer.innerHTML = `
@@ -303,16 +343,29 @@ function checkoutWhatsApp() {
     return;
   }
 
+  if (!selectedState) {
+    alert('Por favor, selecione o seu Estado (UF) para o cálculo do frete antes de finalizar!');
+    return;
+  }
+
+  const subtotalAmount = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const rate = shippingRates[selectedState];
+  const isFree = subtotalAmount >= 400;
+  const shippingCost = isFree ? 0 : rate.price;
+  const totalAmount = subtotalAmount + shippingCost;
+
   let message = "*Novo Pedido - NUMA*\n\n";
   
   cart.forEach((item) => {
     message += `• *${item.title}* (x${item.quantity}) - ${formatCurrency(item.price * item.quantity)}\n`;
   });
   
-  const totalAmount = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-  message += `\n*Total:* ${formatCurrency(totalAmount)}`;
+  message += `\n*Subtotal:* ${formatCurrency(subtotalAmount)}`;
+  message += `\n*Estado de Entrega:* ${rate.name} (${selectedState})`;
+  message += `\n*Frete:* ${isFree ? "GRÁTIS (Promoção Frete Grátis)" : formatCurrency(shippingCost)} (${rate.days})`;
+  message += `\n*Total a Pagar:* ${formatCurrency(totalAmount)}`;
 
-  const phone = "5521999999999"; 
+  const phone = "5521967755728"; 
   const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   
   window.open(url, '_blank');

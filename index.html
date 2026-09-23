@@ -35,9 +35,9 @@
   <!-- 1. BARRA DE ANÚNCIOS (PRETA ORIGINAL) -->
   <div class="bg-black text-white text-xs font-semibold uppercase tracking-widest overflow-hidden py-2.5">
     <div class="animate-marquee whitespace-nowrap">
-      <span class="mx-6">✨ FRETE GRÁTIS A PARTIR DE R$ 400 — CUPOM: NUMA20</span>
+      <span class="mx-6">✨ FRETE GRÁTIS A PARTIR DE R$ 400 </span>
       <span class="mx-6">⭐ CONHEÇA A NOVA COLEÇÃO STAR ⭐</span>
-      <span class="mx-6">✨ FRETE GRÁTIS A PARTIR DE R$ 400 — CUPOM: NUMA20</span>
+      <span class="mx-6">✨ FRETE GRÁTIS A PARTIR DE R$ 400 </span>
       <span class="mx-6">⭐ CONHEÇA A NOVA COLEÇÃO STAR ⭐</span>
     </div>
   </div>
@@ -108,8 +108,8 @@
         <nav class="flex flex-col space-y-4 mt-6 text-xs font-bold uppercase tracking-wider text-numa-dark">
           <a href="#catalogo" onclick="toggleMobileMenu()" class="hover:text-black transition-colors py-1.5">Produtos</a>
           <a href="#quem-somos" onclick="toggleMobileMenu()" class="hover:text-black transition-colors py-1.5">Quem Somos</a>
-          <a href="perguntas-frequentes.html" class="hover:text-black transition-colors py-1.5">Perguntas Frequentes</a>
-          <a href="politica-de-privacidade.html" class="hover:text-black transition-colors py-1.5">Política de Privacidade</a>
+          <a href="perguntas-frequentes.html" onclick="toggleMobileMenu()" class="hover:text-black transition-colors py-1.5">Perguntas Frequentes</a>
+          <a href="politica-de-privacidade.html" onclick="toggleMobileMenu()" class="hover:text-black transition-colors py-1.5">Política de Privacidade</a>
         </nav>
       </div>
       <div class="border-t border-numa-border pt-4 text-[10px] text-numa-subtle uppercase tracking-widest">
@@ -255,7 +255,7 @@
     </div>
   </div>
 
-  <!-- 7. CARRINHO LATERAL (CART DRAWER) -->
+  <!-- 7. CARRINHO LATERAL COM CÁLCULO DE FRETE POR ESTADO -->
   <div id="cart-drawer" class="fixed inset-0 z-50 pointer-events-none">
     <div id="cart-overlay" onclick="toggleCart()" class="absolute inset-0 bg-numa-dark/50 opacity-0 transition-opacity duration-300 pointer-events-none"></div>
     
@@ -273,11 +273,64 @@
         </div>
       </div>
 
+      <!-- PAINEL DE CÁLCULO DE FRETE E RESUMO -->
       <div class="p-6 border-t border-numa-border bg-numa-bg space-y-4">
-        <div class="flex justify-between text-xs font-bold uppercase tracking-wider text-numa-dark">
-          <span>Subtotal</span>
-          <span id="cart-subtotal" class="text-black">R$ 0,00</span>
+        
+        <!-- SELETOR DE ESTADO PARA FRETE -->
+        <div class="space-y-1.5">
+          <label for="shipping-state" class="block text-[10px] font-bold uppercase tracking-wider text-numa-dark">
+            Calcular Frete de Entrega:
+          </label>
+          <select id="shipping-state" onchange="calculateShipping()" class="w-full bg-white border border-numa-border rounded px-3 py-2 text-xs text-numa-dark focus:outline-none focus:border-black uppercase font-semibold">
+            <option value="">Selecione o seu Estado (UF)</option>
+            <option value="RJ">Rio de Janeiro (RJ)</option>
+            <option value="SP">São Paulo (SP)</option>
+            <option value="MG">Minas Gerais (MG)</option>
+            <option value="ES">Espírito Santo (ES)</option>
+            <option value="PR">Paraná (PR)</option>
+            <option value="SC">Santa Catarina (SC)</option>
+            <option value="RS">Rio Grande do Sul (RS)</option>
+            <option value="DF">Distrito Federal (DF)</option>
+            <option value="GO">Goiás (GO)</option>
+            <option value="MT">Mato Grosso (MT)</option>
+            <option value="MS">Mato Grosso do Sul (MS)</option>
+            <option value="BA">Bahia (BA)</option>
+            <option value="CE">Ceará (CE)</option>
+            <option value="PE">Pernambuco (PE)</option>
+            <option value="AL">Alagoas (AL)</option>
+            <option value="PB">Paraíba (PB)</option>
+            <option value="PI">Piauí (PI)</option>
+            <option value="RN">Rio Grande do Norte (RN)</option>
+            <option value="SE">Sergipe (SE)</option>
+            <option value="MA">Maranhão (MA)</option>
+            <option value="AM">Amazonas (AM)</option>
+            <option value="PA">Pará (PA)</option>
+            <option value="AP">Amapá (AP)</option>
+            <option value="AC">Acre (AC)</option>
+            <option value="RO">Rondônia (RO)</option>
+            <option value="RR">Roraima (RR)</option>
+            <option value="TO">Tocantins (TO)</option>
+          </select>
+          <div id="shipping-info" class="text-[10px] text-numa-subtle uppercase tracking-wider hidden pt-0.5">
+            <!-- Texto dinâmico com o prazo de entrega -->
+          </div>
         </div>
+
+        <div class="space-y-1.5 pt-2 border-t border-numa-border/60 text-xs uppercase tracking-wider">
+          <div class="flex justify-between text-numa-dark">
+            <span>Subtotal</span>
+            <span id="cart-subtotal" class="text-black font-medium">R$ 0,00</span>
+          </div>
+          <div class="flex justify-between text-numa-dark">
+            <span>Frete</span>
+            <span id="cart-shipping" class="text-black font-medium">Selecione o estado</span>
+          </div>
+          <div class="flex justify-between font-bold text-numa-dark pt-2 border-t border-numa-border">
+            <span>Total</span>
+            <span id="cart-total" class="text-black text-sm">R$ 0,00</span>
+          </div>
+        </div>
+
         <button onclick="checkoutWhatsApp()" class="w-full bg-black text-white py-4 text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors rounded-sm">
           Finalizar Pedido (WhatsApp)
         </button>
@@ -306,7 +359,11 @@
       <div>
         <h4 class="text-xs font-bold uppercase tracking-widest mb-4 text-zinc-300">Atendimento</h4>
         <p class="text-xs text-zinc-400 uppercase tracking-wider mb-2">Envios para todo o Brasil</p>
-        <p class="text-xs text-zinc-400 uppercase tracking-wider">WhatsApp: (21) 99999-9999</p>
+        <p class="text-xs text-zinc-400 uppercase tracking-wider mb-4">WhatsApp: (21) 967755728</p>
+        <a href="https://www.instagram.com/numa_croche/" target="_blank" class="inline-flex items-center gap-2 text-xs text-zinc-400 uppercase tracking-wider hover:text-white transition-colors">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" /></svg>
+          Siga no Instagram
+        </a>
       </div>
     </div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 flex flex-col sm:flex-row items-center justify-between text-[10px] text-zinc-500 uppercase tracking-widest gap-4">
