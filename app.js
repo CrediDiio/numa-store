@@ -348,16 +348,14 @@ async function checkoutMercadoPago() {
     return;
   }
 
-  // Calcula o frete com a regra de frete grátis acima de R$ 400
   const subtotalAmount = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const rate = shippingRates[selectedState];
   const isFree = subtotalAmount >= 400;
   const shippingCost = isFree ? 0 : rate.price;
 
-  // Altera o texto do botão para mostrar que está a carregar
   const btn = document.getElementById('btn-checkout');
   if (btn) {
-    btn.innerText = "A Processar Pagamento...";
+    btn.innerText = "Processando Pagamento...";
     btn.disabled = true;
   }
 
@@ -374,14 +372,13 @@ async function checkoutMercadoPago() {
     const dados = await resposta.json();
 
     if (dados.init_point) {
-      // Redireciona o cliente para a página segura do Mercado Pago
       window.location.href = dados.init_point;
     } else {
-      alert("Erro ao processar. Verifique a configuração.");
+      alert("Ocorreu um erro ao processar no servidor. Tente novamente.");
       if (btn) { btn.innerText = "Finalizar Pagamento"; btn.disabled = false; }
     }
   } catch (error) {
-    alert("Falha na ligação com o servidor.");
+    alert("Falha de conexão com o servidor. Tente novamente em instantes.");
     if (btn) { btn.innerText = "Finalizar Pagamento"; btn.disabled = false; }
   }
 }

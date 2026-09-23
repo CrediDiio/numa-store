@@ -1,11 +1,11 @@
 const { MercadoPagoConfig, Preference } = require('mercadopago');
 
 module.exports = async (req, res) => {
-  // 1. Evita que navegadores bloqueiem a requisição (CORS)
+  // Cabeçalhos de segurança para a Vercel
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -15,25 +15,30 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Método não permitido' });
   }
 
-  // 🔴 SUBSTITUA PELO SEU ACCESS TOKEN DO MERCADO PAGO AQUI DENTRO DAS ASPAS SIMPLES
-  const client = new MercadoPagoConfig({ accessToken: 'APP_USR-2322046720722810-092309-8ea814cb10953ce2fa3dfb9623ef7c11-605521917' });
-
   try {
+    const client = new MercadoPagoConfig({ 
+      accessToken: 'APP_USR-2322046720722810-092309-8ea814cb10953ce2fa3dfb9623ef7c11-605521917' 
+    });
+
     const { itens, frete } = req.body;
+
+    if (!itens || !Array.isArray(itens) || itens.length === 0) {
+      return res.status(400).json({ error: 'Sacola vazia' });
+    }
 
     const itemsMercadoPago = itens.map(item => ({
       title: item.title,
       unit_price: Number(item.price),
       quantity: Number(item.quantity),
-      currency_id: 'BRL',
+      currency_id: 'BRL'
     }));
 
-    if (frete > 0) {
+    if (frete && Number(frete) > 0) {
       itemsMercadoPago.push({
         title: 'Frete de Entrega',
         unit_price: Number(frete),
         quantity: 1,
-        currency_id: 'BRL',
+        currency_id: 'BRL'
       });
     }
 
@@ -42,19 +47,16 @@ module.exports = async (req, res) => {
       body: {
         items: itemsMercadoPago,
         back_urls: {
-          // 🔴 SUBSTITUA PELA SUA URL DA VERCEL
-          success: 'https://numa-store-taupe.vercel.app/', 
+          success: 'https://numa-store-taupe.vercel.app/',
           failure: 'https://numa-store-taupe.vercel.app/',
-          pending: 'https://numa-store-taupe.vercel.app/',
+          pending: 'https://numa-store-taupe.vercel.app/'
         },
-        auto_return: 'approved',
+        auto_return: 'approved'
       }
     });
 
-    res.status(200).json({ init_point: response.init_point });
+    return res.status(200).json({ init_point: response.init_point });
   } catch (error) {
-    // Exibe o erro real no console da Vercel para sabermos exatamente o que falhou
-    console.error("Erro do Mercado Pago:", error); 
-    res.status(500).json({ error: 'Erro ao gerar pagamento' });
+    return res.status(500).json({ error: 'Erro no servidor do Mercado Pago', details: error.message });
   }
 };

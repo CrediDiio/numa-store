@@ -1,4 +1,7 @@
 {
+  "name": "croche2",
+  "version": "1.0.0",
+  "private": true,
   "dependencies": {
     "mercadopago": "^3.6.0"
   }
